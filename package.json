@@ -1,7 +1,6 @@
 {
-  "name": "live-dashboard-app",
+  "name": "live-instagram-app",
   "version": "1.0.0",
-  "description": "Real-time testing dashboard",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
