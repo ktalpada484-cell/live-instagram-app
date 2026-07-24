@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB Connection
-const MONGO_URI = 'mongodb://localhost:27017/insta_testing_db'; 
+const MONGO_URI = 'mongodb+srv://ktalpada484_db_user:sumit1123@cluster0.zjkzamc.mongodb.net/?appName=Cluster0'; 
 mongoose.connect(MONGO_URI)
     .then(() => console.log('Connected to MongoDB successfully!'))
     .catch(err => console.error('MongoDB connection error:', err));
