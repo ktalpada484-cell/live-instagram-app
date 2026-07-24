@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Full Control</title>
+    <title>Admin Dashboard - Live Control Panel</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             background: linear-gradient(135deg, #7b2cbf, #4cc9f0);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -85,7 +86,7 @@
 
     <!-- Admin Dashboard Section -->
     <div id="dashboardSection" class="glass-card hidden">
-        <h2>Admin Control Panel <span class="badge">Live 30-Day Storage</span></h2>
+        <h2>Admin Control Panel <span class="badge">Live Synchronized</span></h2>
         
         <!-- Navigation Options Tabs -->
         <div class="nav-tabs">
@@ -192,6 +193,7 @@
             const u = document.getElementById('adminUser').value;
             const p = document.getElementById('adminPass').value;
 
+            // Default Admin Credentials
             if (u === 'sumit@1123' && p === 'sumit1123') {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('dashboardSection').classList.remove('hidden');
@@ -255,4 +257,3 @@
     </script>
 </body>
 </html>
-
